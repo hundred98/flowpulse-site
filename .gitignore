@@ -1,0 +1,10 @@
+# Wrangler cache (account/token cache, not source)
+.wrangler/
+
+# dependencies
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

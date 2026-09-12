@@ -15,6 +15,7 @@
       <a href="index.html"><span class="zh">总览</span><span class="en">Overview</span></a>
       <a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a>
     </div>
+    <button class="lang-toggle">EN</button>
   </div>
 </nav>
 
@@ -22,8 +23,42 @@
   <div class="container">
     <a class="doc-back" href="index.html">← <span class="zh">总览</span><span class="en">Overview</span></a>
     <h1><span class="zh">架构详解</span><span class="en">Architecture</span></h1>
-    <p class="doc-lead">本章内容<span class="badge-tbd">待更新</span>。将详述 FlowPulse 分体式四层架构：前端层、FlowPulse 上位机、核心服务端（Rust）、STM32/GD32 设备端（C），以及端到端加密链路。</p>
+    <p class="doc-lead"><span class="zh">本章面向使用者，说明 FlowPulse 四层的职责边界、通信方式与一条指令从网页到电机的完整路径。核心服务端与固件内部实现细节后续补充。</span><span class="en">A user-facing walkthrough of the four tiers' responsibilities, how they talk, and the full path of one command from web to motor. Internal details of the core server and firmware come later.</span></p>
+
+    <h2><span class="zh">整体分层</span><span class="en">Overall Tiers</span></h2>
+    <p><span class="zh">系统分为四层，自上而下为：</span><span class="en">The system splits into four tiers, top to bottom:</span></p>
+    <ul class="tiers">
+      <li><b><span class="zh">前端层</span><span class="en">Frontend</span></b> — <span class="zh">Web 控制台 / 机身触屏(HMI) / 云端 App，直接面向用户。</span><span class="en">Web console / onboard touch HMI / cloud app — directly facing the user.</span></li>
+      <li><b>FlowPulse <span class="zh">上位机</span><span class="en">Host</span></b> — <span class="zh">本地控制与界面，承上启下。</span><span class="en">Local control &amp; UI, bridging frontend and brain.</span></li>
+      <li><b><span class="zh">核心服务端（Rust）</span><span class="en">Core Server (Rust)</span></b> — <span class="zh">调度、前瞻规划、补偿、加密的大脑。</span><span class="en">The brain: scheduling, look-ahead, compensation, encryption.</span></li>
+      <li><b><span class="zh">设备端固件（C）</span><span class="en">Device Firmware (C)</span></b> — <span class="zh">在 STM32/GD32 上实时驱动步进电机。</span><span class="en">Drives steppers in real time on STM32/GD32.</span></li>
+    </ul>
+
+    <h2><span class="zh">前端层</span><span class="en">Frontend Tier</span></h2>
+    <p><span class="zh">提供三种操作入口，共用一套状态与接口，实时推送无需刷新：局域网 Web 控制台、机身触屏（LVGL）、云端 App（经 MQTT）。用户可按场景任选其一，或同时使用多端。</span><span class="en">Three entry points share one state model with live push — no refresh needed: the LAN web console, the onboard touch HMI (LVGL) and the cloud app (over MQTT). Use any one, or several at once.</span></p>
+
+    <h2>FlowPulse <span class="zh">上位机</span><span class="en">Host</span></h2>
+    <p><span class="zh">用 Rust 编写，同一套代码可编译到不同平台：树莓派 / 香橙派（ARM Linux）、x86_64 电脑（Windows / Linux），以及 ESP32 等单片机（IDF，无 OS）。这意味着廉价打印机也无需外接 Linux 主机。</span><span class="en">Written in Rust, one codebase compiles to many targets: Raspberry Pi / Orange Pi (ARM Linux), x86_64 desktops (Windows / Linux), and even MCUs like ESP32 (IDF, no OS). Cheap printers need no external Linux host.</span></p>
+
+    <h2><span class="zh">核心服务端（Rust）</span><span class="en">Core Server (Rust)</span> <span class="badge-tbd">TODO</span></h2>
+    <p><span class="zh">核心服务端是系统的「大脑」，负责指令调度、前瞻运动规划、智能补偿与端到端加密。其内部模块划分、线程模型与对外接口将在后续版本补充。</span><span class="en">The core server is the system's "brain" — command scheduling, look-ahead motion planning, smart compensation and end-to-end encryption. Its internal modules, threading model and public interfaces will be documented in a later revision.</span></p>
+
+    <h2><span class="zh">设备端固件（C，STM32/GD32）</span><span class="en">Device Firmware (C, STM32/GD32)</span> <span class="badge-tbd">TODO</span></h2>
+    <p><span class="zh">固件运行在 STM32/GD32 等单片机上，裸机实时控制步进电机，以约 500 kHz 脉冲频率驱动 X/Y/Z/E 轴。其步进驱动、定时器调度与故障保护细节待补充。</span><span class="en">The firmware runs bare-metal on STM32/GD32 MCUs, driving X/Y/Z/E steppers in real time at ~500 kHz step frequency. Stepper drivers, timer scheduling and fault protection are TODO.</span></p>
+
+    <h2><span class="zh">通信与端到端加密</span><span class="en">Comms &amp; End-to-End Encryption</span></h2>
+    <p><span class="zh">前端经 MQTT / WebSocket / Socket 与上位机通信；上下位机之间的运动指令通过 AES-256-GCM 自动加解密，加密对调用方透明，关键帧密钥可自动轮换。</span><span class="en">The frontend talks to the host over MQTT / WebSocket / Socket; motion commands between host and MCU are auto-encrypted with AES-256-GCM — transparent to callers, with auto key rotation.</span></p>
+
+    <h2><span class="zh">一条指令的数据流</span><span class="en">Command Data Flow</span></h2>
+    <ol>
+      <li><span class="zh">用户在 Web / App 下发打印或移动指令。</span><span class="en">The user issues a print or move command from web / app.</span></li>
+      <li><span class="zh">上位机接收并转交核心服务端。</span><span class="en">The host receives it and hands off to the core server.</span></li>
+      <li><span class="zh">核心服务端做前瞻规划与补偿，加密后下发给固件。</span><span class="en">The core server plans &amp; compensates, then encrypts and sends to firmware.</span></li>
+      <li><span class="zh">设备端固件解密并执行电机脉冲。</span><span class="en">The firmware decrypts and drives the motor pulses.</span></li>
+      <li><span class="zh">温度、位置等状态沿原路实时回传前端。</span><span class="en">Temperature, position and other status stream back to the frontend in real time.</span></li>
+    </ol>
   </div>
 </section>
+<script src="../assets/js/main.js"></script>
 </body>
 </html>

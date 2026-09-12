@@ -15,6 +15,7 @@
       <a href="architecture.html"><span class="zh">架构详解</span><span class="en">Architecture</span></a>
       <a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a>
     </div>
+    <button class="lang-toggle">EN</button>
   </div>
 </nav>
 
@@ -22,12 +23,48 @@
   <div class="container">
     <a class="doc-back" href="../index.html">← <span class="zh">返回首页</span><span class="en">Back</span></a>
     <h1><span class="zh">文档总览</span><span class="en">Documentation Overview</span></h1>
-    <p class="doc-lead">本页内容<span class="badge-tbd">待更新</span>。文档体系正在编写中，涵盖总览、架构详解、运动控制等章节，后续将在此处补充完整。</p>
+
+    <h2><span class="zh">项目简介</span><span class="en">Introduction</span></h2>
+    <p><span class="zh">FlowPulse 是一套协议开放、分体式四层的 3D 打印控制固件。它把「配置 / 运动规划 / 硬件控制」彻底分离：网页与触屏负责操作，上位机与核心服务端充当大脑，单片机负责执行。整条链路从网页指令一路贯通到电机脉冲，并对上下位机之间的运动指令做端到端加密。</span><span class="en">FlowPulse is an openly-protocoled, decoupled four-tier 3D printer control firmware. It cleanly separates configuration, motion planning and hardware control: web &amp; touch handle operation, the host and core server act as the brain, and the MCU executes. The chain runs end-to-end from a web command down to motor pulses, with motion commands end-to-end encrypted between host and MCU.</span></p>
+
+    <h2><span class="zh">项目定位与优势</span><span class="en">Positioning &amp; Advantages</span></h2>
+    <p><span class="zh">与 Klipper 的中心化架构不同，FlowPulse 采用非中心化、分层的设计，可同时运行在 SoC 与单片机上，从而大幅降低硬件成本。最低只需两颗单片机即可跑通：上位机用 ESP32-S3，下位机用 GD32F303 或 STM32F407；还支持扩展喷头单片机（喷头开发目前仅在 STM32F103 上完成）。</span><span class="en">Unlike Klipper's centralized design, FlowPulse is decentralized and layered, running on both SoC and MCU — which sharply lowers hardware cost. A minimal setup needs just two MCUs: an ESP32-S3 host and a GD32F303 or STM32F407 device; a toolhead MCU is also supported (toolhead work is done so far only on STM32F103).</span></p>
+    <ol>
+      <li><span class="zh">支持纯单片机方案，类似某竹 A1 的硬件方案。</span><span class="en">Pure-MCU path, comparable to the 某竹 A1 hardware approach.</span></li>
+      <li><span class="zh">运行在 SoC 时内存占用低，最小可支持 64 MB 内存。</span><span class="en">On SoC it stays light — runs on as little as 64 MB RAM.</span></li>
+      <li><span class="zh">完全自主开发，所有代码可控。</span><span class="en">Fully self-developed; all code is under your control.</span></li>
+    </ol>
+
+    <h2><span class="zh">四层架构一览</span><span class="en">Four Tiers at a Glance</span></h2>
+    <ul class="tiers">
+      <li><b><span class="zh">前端层</span><span class="en">Frontend</span></b> — <span class="zh">Web · HMI · App，用户的操作入口。</span><span class="en">Web · HMI · App — the operator's entry points.</span></li>
+      <li><b>FlowPulse <span class="zh">上位机</span><span class="en">Host</span></b> — <span class="zh">Rust 编写，可编译到 SoC / Windows·Linux / ESP32。</span><span class="en">Written in Rust, compiles to SoC / Windows·Linux / ESP32.</span></li>
+      <li><b><span class="zh">核心服务端（Rust）</span><span class="en">Core Server (Rust)</span></b> — <span class="zh">调度、前瞻运动规划、智能补偿、加密（细节待补充）。</span><span class="en">Scheduling, look-ahead planning, smart compensation, encryption (details TODO).</span></li>
+      <li><b><span class="zh">设备端固件（C，STM32/GD32）</span><span class="en">Device Firmware (C, STM32/GD32)</span></b> — <span class="zh">实时电机脉冲控制（细节待补充）。</span><span class="en">Real-time motor pulse control (details TODO).</span></li>
+    </ul>
+
+    <h2><span class="zh">快速开始</span><span class="en">Quick Start</span></h2>
+    <ol>
+      <li><span class="zh">准备硬件：一块 STM32/GD32 主控板 + 一台上位机（SoC、x86 电脑或 ESP32）。</span><span class="en">Prepare hardware: an STM32/GD32 control board plus a host (SoC, x86 PC or ESP32).</span></li>
+      <li><span class="zh">将设备端固件烧录到主控板。</span><span class="en">Flash the device firmware onto the control board.</span></li>
+      <li><span class="zh">在上位机启动 FlowPulse 服务。</span><span class="en">Start the FlowPulse service on the host.</span></li>
+      <li><span class="zh">同一局域网打开 Web 控制台即可操控打印机。</span><span class="en">Open the web console on the same LAN to control the printer.</span></li>
+    </ol>
+    <p><span class="zh">具体发布包下载与烧录步骤将随各章补充（待更新）。</span><span class="en">Exact release packages and flashing steps will be added per chapter (TODO).</span></p>
+
+    <h2><span class="zh">仓库与目录结构</span><span class="en">Repository Layout</span></h2>
+    <p><span class="zh">站点仓库即本仓库根：</span><span class="en">The site repo is this repo root:</span> <code>index.html</code><span class="zh">（官网）+ </span><span class="en">(website) + </span><code>docs/</code><span class="zh">（本文档）+ </span><span class="en">(this docs) + </span><code>assets/</code><span class="zh">（样式与脚本）。四层源码目录见《架构详解》（待补充）。</span><span class="en">(styles &amp; scripts). Source layout for the four tiers is in Architecture (TODO).</span></p>
+
+    <h2><span class="zh">参与与联系</span><span class="en">Get Involved</span></h2>
+    <p><span class="zh">由于个人时间有限，本项目尚未全部完成测试。如果你有兴趣参与，或需要测试、验证、协助改善与优化本项目，欢迎联系我：</span><span class="en">Due to limited personal time, not everything is tested yet. If you'd like to join, or need testing, validation, or help improving and optimizing the project, feel free to reach out:</span> <a href="mailto:hundred98@163.com">hundred98@163.com</a></p>
+
+    <h2><span class="zh">文档导航</span><span class="en">Chapters</span></h2>
     <ul class="doc-list">
-      <li><a href="architecture.html"><span class="zh">架构详解</span><span class="en">Architecture</span></a><span class="badge-tbd">待更新</span></li>
-      <li><a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a><span class="badge-tbd">待更新</span></li>
+      <li><a href="architecture.html"><span class="zh">架构详解</span><span class="en">Architecture</span></a><span class="zh">四层职责、通信与数据流</span><span class="en">Tier roles, comms &amp; data flow</span></li>
+      <li><a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a><span class="zh">前瞻规划、补偿与调优</span><span class="en">Look-ahead, compensation &amp; tuning</span></li>
     </ul>
   </div>
 </section>
+<script src="../assets/js/main.js"></script>
 </body>
 </html>

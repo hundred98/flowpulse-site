@@ -15,6 +15,7 @@
       <a href="index.html"><span class="zh">总览</span><span class="en">Overview</span></a>
       <a href="architecture.html"><span class="zh">架构详解</span><span class="en">Architecture</span></a>
     </div>
+    <button class="lang-toggle">EN</button>
   </div>
 </nav>
 
@@ -22,8 +23,27 @@
   <div class="container">
     <a class="doc-back" href="index.html">← <span class="zh">总览</span><span class="en">Overview</span></a>
     <h1><span class="zh">运动控制</span><span class="en">Motion Control</span></h1>
-    <p class="doc-lead">本章内容<span class="badge-tbd">待更新</span>。将涵盖前瞻运动规划（look-ahead）、 jerk 限制、加减速曲线、智能补偿策略（共振/温度/回差）与多轴同步。</p>
+    <p class="doc-lead"><span class="zh">本章介绍 FlowPulse 如何让高速打印更平滑、更精准：前瞻规划、加减速曲线、多轴同步与智能补偿，以及使用者如何在控制台调参。</span><span class="en">How FlowPulse keeps high-speed printing smooth and precise: look-ahead, velocity profiles, multi-axis sync, smart compensation, and where you tune them in the console.</span></p>
+
+    <h2><span class="zh">前瞻运动规划</span><span class="en">Look-Ahead Planning</span></h2>
+    <p><span class="zh">前瞻算法在打印前扫描后续路径，提前规划加减速，避免到了转弯处才急刹。这样高速转弯更平滑、更精准，减少抖动与表面波纹。</span><span class="en">Look-ahead scans upcoming paths before printing and plans acceleration in advance, so the printer doesn't slam the brakes at corners — smoother, sharper high-speed turns with less ringing.</span></p>
+
+    <h2><span class="zh">加减速曲线与 jerk 限制</span><span class="en">Velocity Profiles &amp; Jerk Limit</span></h2>
+    <p><span class="zh">支持 S-Curve 与 SixPoint 速度曲线，并对 jerk（加加速度）做限制，使速度变化连续，机械冲击更小、运行噪声更低。</span><span class="en">Supports S-Curve and SixPoint velocity profiles with jerk limiting, keeping acceleration continuous for gentler mechanical stress and lower noise.</span></p>
+
+    <h2><span class="zh">多轴同步</span><span class="en">Multi-Axis Sync</span></h2>
+    <p><span class="zh">X/Y/Z/E 多轴在同一时间基准下协同插补，圆弧插补保证曲线段精度，避免各轴不同步导致的棱角失真。</span><span class="en">X/Y/Z/E axes interpolate on a shared time base; arc interpolation keeps curved segments precise and avoids corner distortion from desync.</span></p>
+
+    <h2><span class="zh">智能补偿</span><span class="en">Smart Compensation</span></h2>
+    <ul class="tiers">
+      <li><b><span class="zh">热床调平</span><span class="en">Bed Leveling</span></b> — <span class="zh">双线性 / 双三次 / 拉格朗日网格，修正平台不平整。</span><span class="en">Bilinear / bicubic / Lagrange mesh to correct an uneven bed.</span></li>
+      <li><b><span class="zh">共振补偿（Input Shaper）</span><span class="en">Input Shaping</span></b> — <span class="zh">ZV / MZV / ZVD / EI 等整形器，抑制打印波纹与机架抖动。</span><span class="en">ZV / MZV / ZVD / EI shapers to kill ringing and frame wobble.</span></li>
+    </ul>
+
+    <h2><span class="zh">参数调优指引</span><span class="en">Tuning Guide</span></h2>
+    <p><span class="zh">在控制台的「补偿」面板可设置调平网格密度与输入整形器类型 / 频率。默认值已适配常见机型；首次使用建议先做一次共振频率自动测定，再据此选择整形器。</span><span class="en">In the console's Compensation panel you set mesh density and the input-shaper type / frequency. Defaults fit common machines; on first run, run an auto resonance-frequency measurement, then pick a shaper from the result.</span></p>
   </div>
 </section>
+<script src="../assets/js/main.js"></script>
 </body>
 </html>
