@@ -167,16 +167,16 @@
 
     <div class="card cmp reveal">
       <table class="spec-table">
-        <thead><tr><th></th><th>某竹</th><th>Klipper</th><th class="hl">FlowPulse</th></tr></thead>
+        <thead><tr><th></th><th><span class="zh">某竹</span><span class="en">Bambu</span></th><th>Klipper</th><th class="hl">FlowPulse</th></tr></thead>
         <tbody>
-          <tr><td><span class="zh">上位机语言</span><span class="en">Host lang</span></td><td>自研（闭源）</td><td>Python</td><td class="hl">Rust</td></tr>
-          <tr><td><span class="zh">运行平台</span><span class="en">Runs on</span></td><td>专用主控</td><td>仅 SoC（Linux）</td><td class="hl">SoC + Windows/Linux + ESP32</td></tr>
-          <tr><td><span class="zh">开放性</span><span class="en">Openness</span></td><td>闭源</td><td>开源（需 Linux 主机）</td><td class="hl">协议开放</td></tr>
+          <tr><td><span class="zh">上位机语言</span><span class="en">Host lang</span></td><td><span class="zh">自研（闭源）</span><span class="en">Proprietary (closed)</span></td><td>Python</td><td class="hl">Rust</td></tr>
+          <tr><td><span class="zh">运行平台</span><span class="en">Runs on</span></td><td><span class="zh">专用主控</span><span class="en">Dedicated controller</span></td><td><span class="zh">仅 SoC（Linux）</span><span class="en">SoC only (Linux)</span></td><td class="hl">SoC + Windows/Linux + ESP32</td></tr>
+          <tr><td><span class="zh">开放性</span><span class="en">Openness</span></td><td><span class="zh">闭源</span><span class="en">Closed-source</span></td><td><span class="zh">开源（需 Linux 主机）</span><span class="en">Open-source (needs a Linux host)</span></td><td class="hl"><span class="zh">协议开放</span><span class="en">Open protocol</span></td></tr>
         </tbody>
       </table>
       <p class="dev-note" style="margin-top:18px;text-align:center">
         <span class="zh">现状：行业里只有某竹是自研闭源系统，其余厂家基本基于 Klipper。Klipper 用 Python，只能跑在 SoC（Linux），无法在单片机上位机运行；FlowPulse 用 Rust，既能编译到 SoC，也能编译到 ESP32 等单片机。</span>
-        <span class="en">Today only 某竹 ships a self-developed (closed) system; most others build on Klipper. Klipper is Python and runs only on SoC (Linux) — never on an MCU host. FlowPulse is Rust, compiling to SoC and to MCUs like ESP32 alike.</span>
+        <span class="en">Today only Bambu ships a self-developed (closed) system; most others build on Klipper. Klipper is Python and runs only on SoC (Linux) — never on an MCU host. FlowPulse is Rust, compiling to SoC and to MCUs like ESP32 alike.</span>
       </p>
     </div>
   </div>
@@ -237,7 +237,7 @@
       <div class="card reveal">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 7V4M14 7V4M10 20v-3M14 20v-3M7 10H4M7 14H4M20 10h-3M20 14h-3"/></svg></div>
         <h3><span class="zh">纯单片机方案</span><span class="en">Pure-MCU Path</span></h3>
-        <p><span class="zh">类似某竹 A1 的硬件方案，廉价打印机无需外接 Linux 主机即可跑自研系统。</span><span class="en">Like the 某竹 A1 hardware approach — cheap printers run a self-built system with no external Linux host.</span></p>
+        <p><span class="zh">类似某竹 A1 的硬件方案，廉价打印机无需外接 Linux 主机即可跑自研系统。</span><span class="en">Like the Bambu A1 hardware approach — cheap printers run a self-built system with no external Linux host.</span></p>
       </div>
       <div class="card reveal">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="10" rx="1.5"/><path d="M7 7v10M11 7v10M15 7v10M3 11h18"/></svg></div>
@@ -399,9 +399,9 @@
         <h3><span class="zh">热床调平补偿</span><span class="en">Bed Mesh Leveling</span></h3>
         <p><span class="zh">按喷嘴当前 XY 位置补偿 Z 高度，支持三种插值：</span><span class="en">Compensates Z by nozzle XY position, with three interpolators:</span></p>
         <div class="code">
-<span class="k">Bilinear</span>  <span class="v">4 点</span>  — <span class="zh">快速线性</span><span class="en">fast linear</span><br>
-<span class="k">Bicubic</span>  <span class="v">16 点</span> — <span class="zh">平滑 C1 连续</span><span class="en">smooth C1</span><br>
-<span class="k">Lagrange</span> <span class="v">可变</span>  — <span class="zh">高阶精确</span><span class="en">high-order exact</span>
+<span class="k">Bilinear</span>  <span class="v"><span class="zh">4 点</span><span class="en">4-pt</span></span>  — <span class="zh">快速线性</span><span class="en">fast linear</span><br>
+<span class="k">Bicubic</span>  <span class="v"><span class="zh">16 点</span><span class="en">16-pt</span></span> — <span class="zh">平滑 C1 连续</span><span class="en">smooth C1</span><br>
+<span class="k">Lagrange</span> <span class="v"><span class="zh">可变</span><span class="en">variable</span></span>  — <span class="zh">高阶精确</span><span class="en">high-order exact</span>
         </div>
       </div>
       <div class="card reveal">
@@ -432,8 +432,8 @@
         <thead><tr><th><span class="zh">指标</span><span class="en">Metric</span></th><th><span class="zh">服务端</span><span class="en">Core Server</span></th><th><span class="zh">设备端</span><span class="en">Device</span></th></tr></thead>
         <tbody>
           <tr><td><span class="zh">芯片</span><span class="en">MCU</span></td><td>ARM Cortex-A (Linux)</td><td><b>STM32F407</b> @ 168MHz · <b>GD32F303</b> @ 120MHz</td></tr>
-          <tr><td><span class="zh">内存</span><span class="en">Memory</span></td><td><b>~15 MB</b>（应用层 6.7 / 服务层 8.6）</td><td><b>~40 KB</b> SRAM</td></tr>
-          <tr><td><span class="zh">系统</span><span class="en">OS</span></td><td>Linux</td><td><b>裸机</b> (no RTOS)</td></tr>
+          <tr><td><span class="zh">内存</span><span class="en">Memory</span></td><td><span class="zh"><b>~15 MB</b>（应用层 6.7 / 服务层 8.6）</span><span class="en"><b>~15 MB</b> (app 6.7 / service 8.6)</span></td><td><b>~40 KB</b> SRAM</td></tr>
+          <tr><td><span class="zh">系统</span><span class="en">OS</span></td><td>Linux</td><td><span class="zh"><b>裸机</b> (no RTOS)</span><span class="en"><b>Bare metal</b> (no RTOS)</span></td></tr>
           <tr><td><span class="zh">脉冲输出</span><span class="en">Step rate</span></td><td>—</td><td><b>~500 kHz</b></td></tr>
           <tr><td><span class="zh">控制周期</span><span class="en">Control tick</span></td><td>—</td><td><b>1 ms</b> (SysTick)</td></tr>
           <tr><td><span class="zh">串口</span><span class="en">UART</span></td><td>—</td><td><b>115200 bps</b></td></tr>
