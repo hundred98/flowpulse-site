@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowPulse — 下一代 3D 打印控制固件 · Next-gen 3D Printer Control Firmware</title>
+<meta name="description" content="FlowPulse 是一套分体式四层 3D 打印控制固件：前端、客户端、核心服务端、STM32 设备端，Rust + C 打造，支持前瞻运动规划、智能补偿与端到端加密。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav">
+  <div class="container">
+    <a class="brand" href="#top"><span class="dot"></span>Flow<b>Pulse</b></a>
+    <button class="nav-toggle">☰</button>
+    <div class="nav-links">
+      <a href="#features"><span class="zh">特性</span><span class="en">Features</span></a>
+      <a href="#platform"><span class="zh">平台</span><span class="en">Runtime</span></a>
+      <a href="#arch"><span class="zh">架构</span><span class="en">Architecture</span></a>
+      <a href="#motion"><span class="zh">运动控制</span><span class="en">Motion</span></a>
+      <a href="#comp"><span class="zh">智能补偿</span><span class="en">Compensation</span></a>
+      <a href="#specs"><span class="zh">关键指标</span><span class="en">Specs</span></a>
+      <a href="#scenes"><span class="zh">场景</span><span class="en">Scenarios</span></a>
+      <a href="#oss"><span class="zh">代码</span><span class="en">Code</span></a>
+    </div>
+    <div class="nav-actions">
+      <a class="btn btn-primary" href="docs/index.html" style="padding:9px 18px;font-size:14px"><span class="zh">文档</span><span class="en">Docs</span> →</a>
+      <button class="lang-toggle">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <div class="orb orb-1" data-depth="26" aria-hidden="true"></div>
+  <div class="orb orb-2" data-depth="16" aria-hidden="true"></div>
+  <div class="orb orb-3" data-depth="36" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-badge">
+      <b>Rust + C</b><span class="sep">·</span><span class="zh">四端协同</span><span class="en">four-tier runtime</span><span class="sep">·</span><span class="zh">协议开放</span><span class="en">open protocol</span>
+    </div>
+    <h1><span class="grad">FlowPulse</span></h1>
+    <p class="tag">
+      <span class="zh">流动 · 脉冲 —— 为高速精密打印而生的控制固件</span>
+      <span class="en">Flow · Pulse — control firmware built for high-speed, high-precision printing</span>
+    </p>
+    <p class="sub">
+      <span class="zh">一套分体式四层架构，从网页指令到电机脉冲，全链路闭环。Rust 后端大脑 + C 语言裸机固件。支持 SoC 与纯单片机两种落地方案，最低 64 MB 内存即可稳定运行。</span>
+      <span class="en">A decoupled four-tier architecture covering the full chain from web commands to motor pulses. A Rust control brain plus bare-metal C firmware. Runs on both SoC and pure-MCU boards — stable from just 64 MB RAM.</span>
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="docs/index.html"><span class="zh">阅读文档</span><span class="en">Read the Docs</span> →</a>
+      <a class="btn" href="#arch"><span class="zh">了解架构</span><span class="en">Explore Architecture</span></a>
+    </div>
+    <div class="pills">
+      <span class="pill"><b>Rust</b> + <b>C</b></span>
+      <span class="pill"><span class="zh">四层解耦</span><span class="en">4-tier decoupled</span></span>
+      <span class="pill"><span class="zh">端到端加密</span><span class="en">E2E encrypted</span></span>
+      <span class="pill">AES-256-GCM</span>
+      <span class="pill">~500 <span class="zh">kHz 脉冲</span><span class="en">kHz step</span></span>
+    </div>
+
+    <div class="console reveal">
+      <div class="console-bar">
+        <span class="c-dots"><i></i><i></i><i></i></span>
+        <span class="c-title">flowpulse · motion console</span>
+        <span class="c-badge">● AES-256-GCM</span>
+      </div>
+      <div class="console-body">
+        <pre class="c-log" id="cLog" aria-hidden="true"></pre>
+        <div class="c-live" aria-hidden="true">
+          <span class="live-t"><span class="zh">实时状态</span><span class="en">Live</span></span>
+          <div class="c-row"><span>X</span><span class="c-val" id="lvX">124.612</span></div>
+          <div class="c-row"><span>Y</span><span class="c-val" id="lvY">88.204</span></div>
+          <div class="c-row"><span>Z</span><span class="c-val" id="lvZ">0.200</span></div>
+          <div class="c-row"><span>E</span><span class="c-val" id="lvE">42.318</span></div>
+          <div class="c-row"><span>feed</span><span class="c-val up" id="lvF">6000 mm/min</span></div>
+          <div class="meter-wrap">
+            <div class="c-row" style="margin-bottom:6px"><span>step rate</span><span class="c-val" id="lvS">498 kHz</span></div>
+            <div class="meter"><i id="lvBar"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="console-foot">
+        <span>MCU <b>STM32F407 @168MHz</b></span>
+        <span>step <b>~500 kHz</b></span>
+        <span>tick <b>1 ms</b></span>
+        <span>RSS <b>~15 MB</b></span>
+        <span style="margin-left:auto"><b id="fps">60</b> fps</span>
+      </div>
+    </div>
+
+    <div class="hero-stats reveal">
+      <div class="hl-item">
+        <span class="hl-num">≥ 64 <small>MB</small></span>
+        <span class="hl-lbl"><span class="zh">最低即可稳定运行</span><span class="en">Stable from 64 MB</span></span>
+      </div>
+      <div class="hl-item">
+        <span class="hl-num">SoC + <span class="zh">纯单片机</span><span class="en">Pure MCU</span></span>
+        <span class="hl-lbl"><span class="zh">两种落地方案</span><span class="en">Two paths</span></span>
+      </div>
+      <div class="hl-item">
+        <span class="hl-num"><span class="zh">类某竹 A1</span><span class="en">A1-class</span></span>
+        <span class="hl-lbl"><span class="zh">低成本路线</span><span class="en">Low-cost path</span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== PLATFORM / RUNTIME ===================== -->
+<section class="section" id="platform">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Runtime</span>
+      <h2><span class="zh">一套上位机，处处可跑</span><span class="en">One Host, Everywhere</span></h2>
+      <p><span class="zh">FlowPulse 上位机用 Rust 编写，编译目标覆盖 SoC 与单片机——不必绑定树莓派，也能跑自研系统。</span><span class="en">Written in Rust, the FlowPulse host compiles for SoC and MCU alike — a self-developed system without tethering to a Raspberry Pi.</span></p>
+    </div>
+    <div class="grid grid-4">
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></div>
+        <h3>SoC</h3><p><span class="zh">树莓派 / 香橙派（ARM Linux）</span><span class="en">Raspberry Pi / Orange Pi (ARM Linux)</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <h3>Windows / Linux</h3><p><span class="zh">x86_64 单机或 PC 直接运行</span><span class="en">Runs on x86_64 desktops &amp; PCs</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="9" width="10" height="12" rx="2"/><path d="M10 9V6M14 9V6M9.5 13h5M9.5 16.5h5M12 2v2"/></svg></div>
+        <h3>ESP32</h3><p><span class="zh">单片机（IDF，无 OS）也能当上位机</span><span class="en">Even a bare MCU (ESP32, IDF, no OS) as host</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg></div>
+        <h3><span class="zh">低成本方案</span><span class="en">Low-cost</span></h3><p><span class="zh">廉价打印机无需外接 Linux 主机</span><span class="en">Cheap printers need no external Linux host</span></p>
+      </div>
+    </div>
+    <p class="platform-cap"><span class="zh">从树莓派到 <b>ESP32 单片机</b>，同一套上位机代码，按需编译到不同平台。</span><span class="en">From Raspberry Pi down to an <b>ESP32 MCU</b> — the same host codebase, compiled per target.</span></p>
+
+    <div class="card cmp reveal">
+      <table class="spec-table">
+        <thead><tr><th></th><th>某竹</th><th>Klipper</th><th class="hl">FlowPulse</th></tr></thead>
+        <tbody>
+          <tr><td><span class="zh">上位机语言</span><span class="en">Host lang</span></td><td>自研（闭源）</td><td>Python</td><td class="hl">Rust</td></tr>
+          <tr><td><span class="zh">运行平台</span><span class="en">Runs on</span></td><td>专用主控</td><td>仅 SoC（Linux）</td><td class="hl">SoC + Windows/Linux + ESP32</td></tr>
+          <tr><td><span class="zh">开放性</span><span class="en">Openness</span></td><td>闭源</td><td>开源（需 Linux 主机）</td><td class="hl">协议开放</td></tr>
+        </tbody>
+      </table>
+      <p class="dev-note" style="margin-top:18px;text-align:center">
+        <span class="zh">现状：行业里只有某竹是自研闭源系统，其余厂家基本基于 Klipper。Klipper 用 Python，只能跑在 SoC（Linux），无法在单片机上位机运行；FlowPulse 用 Rust，既能编译到 SoC，也能编译到 ESP32 等单片机。</span>
+        <span class="en">Today only 某竹 ships a self-developed (closed) system; most others build on Klipper. Klipper is Python and runs only on SoC (Linux) — never on an MCU host. FlowPulse is Rust, compiling to SoC and to MCUs like ESP32 alike.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section class="section section--alt" id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Features</span>
+      <h2><span class="zh">核心特性</span><span class="en">Core Features</span></h2>
+      <p><span class="zh">为性能、精度与可靠性而设计的关键能力。</span><span class="en">Key capabilities engineered for performance, precision and reliability.</span></p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5" opacity=".45"/></svg></div>
+        <h3><span class="zh">分体式四层架构</span><span class="en">Decoupled 4-Tier Architecture</span></h3>
+        <p><span class="zh">前端 / 客户端 / 核心服务端 / 设备端各司其职，配置、运动规划与硬件控制彻底分离，职责清晰、易于扩展。</span><span class="en">Frontend, client, core server and device firmware each own a single responsibility — config, motion planning and hardware are cleanly separated.</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 8L9 4l-3 8H2"/></svg></div>
+        <h3><span class="zh">高性能运动规划</span><span class="en">High-Performance Motion Planning</span></h3>
+        <p><span class="zh">前瞻算法提前加减速，S-Curve / SixPoint 速度曲线，圆弧插补，让高速转弯更平滑、更精准。</span><span class="en">Look-ahead acceleration, S-Curve / SixPoint velocity profiles and arc interpolation for smoother, sharper high-speed corners.</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l2.5-7 4 14 3-10 2 3H22"/></svg></div>
+        <h3><span class="zh">双重智能补偿</span><span class="en">Dual Smart Compensation</span></h3>
+        <p><span class="zh">热床调平（双线性 / 双三次 / 拉格朗日）+ 共振补偿（ZV / MZV / ZVD / EI 等 6 种整形器），消除条纹与抖动。</span><span class="en">Bed mesh leveling plus input shaping (ZV/MZV/ZVD/EI & more) to kill ringing and print artifacts.</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4M12 15v2"/></svg></div>
+        <h3><span class="zh">端到端加密通信</span><span class="en">End-to-End Encrypted Link</span></h3>
+        <p><span class="zh">上下位机运动指令经 AES-256-GCM 自动加解密，加密层对调用方透明，关键帧密钥可自动轮换。</span><span class="en">Motion commands between host and MCU are auto encrypted with AES-256-GCM — transparent to callers, with auto key rotation.</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.4 8.4-7 10-3.6-1.6-7-5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3><span class="zh">实时安全链</span><span class="en">Real-Time Safety Chain</span></h3>
+        <p><span class="zh">温度越限、位置越界、硬件故障秒级检测，急停链路闭环到所有前端，状态机全程守护。</span><span class="en">Second-level detection of over-temperature, out-of-bounds and faults; an emergency-stop chain broadcasts to every frontend.</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="11" rx="2"/><path d="M5 19h6"/><rect x="16" y="9" width="6" height="11" rx="1.6"/></svg></div>
+        <h3><span class="zh">多端统一访问</span><span class="en">Multi-Surface Access</span></h3>
+        <p><span class="zh">局域网 Web、机身触屏（LVGL）、云端 App（MQTT）三端共用一套状态与接口，实时推送无需刷新。</span><span class="en">LAN web, onboard touch HMI and cloud app share one state model with live push — no refresh needed.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ARCHITECTURE ===================== -->
+<section class="section" id="arch">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Architecture</span>
+      <h2><span class="zh">系统架构</span><span class="en">System Architecture</span></h2>
+      <p><span class="zh">从你点下「开始打印」到电机转动，四个端层层衔接、各管一段。</span><span class="en">From the moment you hit "Print" to the motor spinning — four tiers, each owning its stage.</span></p>
+    </div>
+
+    <div class="pipeline-panel reveal">
+      <svg viewBox="0 0 1100 300" role="img" aria-label="FlowPulse four-tier pipeline">
+        <!-- connector track (full chain) -->
+        <line class="flow-track" x1="140" y1="150" x2="980" y2="150"/>
+        <line class="flow-line"  x1="250" y1="150" x2="310" y2="150"/>
+        <line class="flow-line"  x1="530" y1="150" x2="590" y2="150"/>
+        <line class="flow-line"  x1="810" y1="150" x2="870" y2="150"/>
+        <!-- flowing pulse (travels the whole pipeline) -->
+        <circle class="comet" cx="140" cy="150" r="4.5"/>
+        <!-- node 1 -->
+        <rect class="node-box" x="30" y="95" width="220" height="110" rx="14"/>
+        <circle class="node-accent" cx="52" cy="118" r="7"/>
+        <text class="node-title" x="140" y="124" text-anchor="middle"><tspan class="zh">前端层</tspan><tspan class="en">Frontend</tspan></text>
+        <text class="node-sub" x="140" y="150" text-anchor="middle">Web · HMI · App</text>
+        <text class="node-sub" x="140" y="172" text-anchor="middle">MQTT / WS / Socket</text>
+        <!-- node 2 -->
+        <rect class="node-box" x="310" y="95" width="220" height="110" rx="14"/>
+        <circle class="node-accent" cx="332" cy="118" r="7"/>
+        <text class="node-title" x="420" y="124" text-anchor="middle"><tspan class="zh">FlowPulse 上位机</tspan><tspan class="en">FlowPulse Host</tspan></text>
+        <text class="node-sub" x="420" y="150" text-anchor="middle">Rust · SoC + MCU</text>
+        <text class="node-sub" x="420" y="172" text-anchor="middle">Windows / Linux / ESP32</text>
+        <!-- node 3 -->
+        <rect class="node-box" x="590" y="95" width="220" height="110" rx="14"/>
+        <circle class="node-accent" cx="612" cy="118" r="7"/>
+        <text class="node-title" x="700" y="124" text-anchor="middle">emb-core-server</text>
+        <text class="node-sub" x="700" y="150" text-anchor="middle"><tspan class="zh">Rust · 运动规划</tspan><tspan class="en">Rust · Motion</tspan></text>
+        <text class="node-sub" x="700" y="172" text-anchor="middle"><tspan class="zh">加密 / 补偿</tspan><tspan class="en">Crypto / Comp.</tspan></text>
+        <!-- node 4 -->
+        <rect class="node-box" x="870" y="95" width="220" height="110" rx="14"/>
+        <circle class="node-accent" cx="892" cy="118" r="7"/>
+        <text class="node-title" x="980" y="124" text-anchor="middle"><tspan class="zh">STM32 / GD32 固件</tspan><tspan class="en">STM32 / GD32 FW</tspan></text>
+        <text class="node-sub" x="980" y="150" text-anchor="middle"><tspan class="zh">C · 电机 / 温度</tspan><tspan class="en">C · Motor / Temp</tspan></text>
+        <text class="node-sub" x="980" y="172" text-anchor="middle">1ms <tspan class="zh">周期</tspan><tspan class="en">tick</tspan></text>
+      </svg>
+      <p class="platform-cap"><span class="zh">一条链路，从网页指令到电机脉冲——上位机可落在 <b>SoC 或 ESP32 单片机</b>。</span><span class="en">One chain from web command to motor pulse — the host can sit on a <b>SoC or an ESP32 MCU</b>.</span></p>
+    </div>
+
+    <div class="arch reveal">
+      <div class="layer">
+        <span class="layer-tag">L1 · PRESENTATION</span>
+        <h4><span class="hl-accent"><span class="zh">前端层</span><span class="en">Frontend Layer</span></span></h4>
+        <div class="boxes">
+          <span class="box"><span class="zh">电脑网页</span><span class="en">Web UI</span> · Vue3</span>
+          <span class="box"><span class="zh">机身触屏</span><span class="en">Touch HMI</span> · LVGL</span>
+          <span class="box"><span class="zh">云端 App</span><span class="en">Cloud App</span> · MQTT</span>
+        </div>
+      </div>
+      <div class="arch-link">WebSocket / Unix Socket / MQTT ▼</div>
+
+      <div class="layer">
+        <span class="layer-tag">L2 · CLIENT</span>
+        <h4><span class="hl-accent">FlowPulse <span class="zh">客户端与应用层</span><span class="en">Client &amp; App Layer</span></span> · <span class="box lang">Rust</span></h4>
+        <div class="boxes">
+          <span class="box">host <span class="zh">主程序</span><span class="en">host</span></span>
+          <span class="box">web-server <span class="zh">网页服务</span><span class="en">web server</span></span>
+          <span class="box">emb-public <span class="zh">业务库</span><span class="en">core lib</span></span>
+          <span class="box">emb-api <span class="zh">通信协议</span><span class="en">protocol</span></span>
+        </div>
+      </div>
+      <div class="arch-link">TCP :9527 (JSON) ▼</div>
+
+      <div class="layer">
+        <span class="layer-tag">L3 · CORE SERVER</span>
+        <h4><span class="hl-accent">emb-core-server <span class="zh">核心服务端</span><span class="en">Core Server</span></span> · <span class="box lang">Rust</span></h4>
+        <div class="boxes">
+          <span class="box"><span class="zh">运动规划</span><span class="en">Motion Planner</span></span>
+          <span class="box"><span class="zh">前瞻</span><span class="en">Look-ahead</span></span>
+          <span class="box"><span class="zh">补偿</span><span class="en">Compensation</span></span>
+          <span class="box"><span class="zh">串口驱动</span><span class="en">Serial Driver</span></span>
+          <span class="box"><span class="zh">加密</span><span class="en">Crypto</span></span>
+        </div>
+      </div>
+      <div class="arch-link">UART 115200 · <span class="zh">二进制帧</span><span class="en">binary frames</span> ▼</div>
+
+      <div class="layer">
+        <span class="layer-tag">L4 · DEVICE</span>
+        <h4><span class="hl-accent">STM32F407 / GD32F303 <span class="zh">设备端固件</span><span class="en">Device Firmware</span></span> · <span class="box lang">C</span></h4>
+        <div class="boxes">
+          <span class="box"><span class="zh">协议层</span><span class="en">Protocol</span></span>
+          <span class="box"><span class="zh">运动层</span><span class="en">Motion</span></span>
+          <span class="box"><span class="zh">温度控制</span><span class="en">Temperature</span></span>
+          <span class="box"><span class="zh">板级驱动</span><span class="en">Board</span></span>
+          <span class="box"><span class="zh">调度器</span><span class="en">Scheduler</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MOTION ===================== -->
+<section class="section section--alt" id="motion">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Motion Control</span>
+      <h2><span class="zh">运动控制</span><span class="en">Motion Control</span></h2>
+      <p><span class="zh">把一条 G-code 路径，变成电机精准的每一步脉冲。</span><span class="en">Turning a G-code path into precisely timed motor pulses.</span></p>
+    </div>
+    <div class="grid grid-2">
+      <div class="card reveal">
+        <h3><span class="zh">前瞻与速度曲线</span><span class="en">Look-ahead & Velocity Profiles</span></h3>
+        <p><span class="zh">前瞻队列提前查看前方若干段，按 S-Curve / SixPoint 规划加减速，避免急停急起，转弯更顺滑。</span><span class="en">A look-ahead queue inspects upcoming segments and shapes acceleration with S-Curve / SixPoint profiles to avoid jerky starts and stops.</span></p>
+      </div>
+      <div class="card reveal">
+        <h3><span class="zh">Bresenham 插补</span><span class="en">Bresenham Interpolation</span></h3>
+        <p><span class="zh">多轴整数闭式规划，逐轴精确算出每步时刻，与 E 轴同源算法保证双 MCU 脉冲同步。</span><span class="en">Per-axis integer closed-form stepping, aligned with the E-axis algorithm so dual-MCU pulses stay in sync.</span></p>
+      </div>
+      <div class="card reveal">
+        <h3><span class="zh">TIMER 脉冲输出</span><span class="en">TIM6 Step Output</span></h3>
+        <p><span class="zh">Klipper 式状态机在最高优先级 ISR 中输出脉冲，4 轴步进缓冲（512 事件环形队列）零丢步。</span><span class="en">A Klipper-style state machine emits pulses from the top-priority ISR; a 512-event ring buffer feeds 4 axes without missed steps.</span></p>
+      </div>
+      <div class="card reveal">
+        <h3><span class="zh">圆弧与归零</span><span class="en">Arc & Homing</span></h3>
+        <p><span class="zh">G2/G3 圆弧插补（弦高误差控制）+ 自动归零流程，让曲线与原点都精准可靠。</span><span class="en">G2/G3 arc interpolation with chord-error control plus an automated homing flow for reliable curves and origins.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMPENSATION ===================== -->
+<section class="section" id="comp">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Compensation</span>
+      <h2><span class="zh">智能补偿</span><span class="en">Smart Compensation</span></h2>
+      <p><span class="zh">两层算法，解决打印最常见的两类瑕疵：翘边与条纹。</span><span class="en">Two layers that fix the two most common flaws: poor first-layer adhesion and ringing.</span></p>
+    </div>
+    <div class="grid grid-2">
+      <div class="card reveal">
+        <h3><span class="zh">热床调平补偿</span><span class="en">Bed Mesh Leveling</span></h3>
+        <p><span class="zh">按喷嘴当前 XY 位置补偿 Z 高度，支持三种插值：</span><span class="en">Compensates Z by nozzle XY position, with three interpolators:</span></p>
+        <div class="code">
+<span class="k">Bilinear</span>  <span class="v">4 点</span>  — <span class="zh">快速线性</span><span class="en">fast linear</span><br>
+<span class="k">Bicubic</span>  <span class="v">16 点</span> — <span class="zh">平滑 C1 连续</span><span class="en">smooth C1</span><br>
+<span class="k">Lagrange</span> <span class="v">可变</span>  — <span class="zh">高阶精确</span><span class="en">high-order exact</span>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3><span class="zh">共振补偿（Input Shaping）</span><span class="en">Resonance (Input Shaping)</span></h3>
+        <p><span class="zh">过滤引发机器抖动的速度变化，支持 6 种整形器：</span><span class="en">Filters velocity changes that excite ringing — six shapers:</span></p>
+        <div class="code">
+<span class="k">ZV</span>       2 <span class="zh">脉冲 · 基础</span><span class="en">pulses · base</span><br>
+<span class="k">MZV</span>      3 <span class="zh">脉冲 · 消速度残余</span><span class="en">pulses · kills velocity resid.</span><br>
+<span class="k">ZVD</span>      3 <span class="zh">脉冲 · 抗频偏</span><span class="en">pulses · freq-robust</span><br>
+<span class="k">EI</span>       3 <span class="zh">脉冲 · 宽抑制</span><span class="en">pulses · wide</span><br>
+<span class="k">2-Hump EI</span> 4 <span class="zh">脉冲 · 更宽</span><span class="en">pulses · wider</span><br>
+<span class="k">3-Hump EI</span> 5 <span class="zh">脉冲 · 最宽</span><span class="en">pulses · widest</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SPECS ===================== -->
+<section class="section section--alt" id="specs">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Specs</span>
+      <h2><span class="zh">关键指标</span><span class="en">Key Specs</span></h2>
+    </div>
+    <div class="card reveal">
+      <table class="spec-table">
+        <thead><tr><th><span class="zh">指标</span><span class="en">Metric</span></th><th><span class="zh">服务端</span><span class="en">Core Server</span></th><th><span class="zh">设备端</span><span class="en">Device</span></th></tr></thead>
+        <tbody>
+          <tr><td><span class="zh">芯片</span><span class="en">MCU</span></td><td>ARM Cortex-A (Linux)</td><td><b>STM32F407</b> @ 168MHz · <b>GD32F303</b> @ 120MHz</td></tr>
+          <tr><td><span class="zh">内存</span><span class="en">Memory</span></td><td><b>~15 MB</b>（应用层 6.7 / 服务层 8.6）</td><td><b>192 KB</b> SRAM</td></tr>
+          <tr><td><span class="zh">系统</span><span class="en">OS</span></td><td>Linux</td><td><b>裸机</b> (no RTOS)</td></tr>
+          <tr><td><span class="zh">脉冲输出</span><span class="en">Step rate</span></td><td>—</td><td><b>~500 kHz</b></td></tr>
+          <tr><td><span class="zh">控制周期</span><span class="en">Control tick</span></td><td>—</td><td><b>1 ms</b> (SysTick)</td></tr>
+          <tr><td><span class="zh">串口</span><span class="en">UART</span></td><td>—</td><td><b>115200 bps</b></td></tr>
+          <tr><td><span class="zh">加密</span><span class="en">Crypto</span></td><td><b>AES-256-GCM</b></td><td><b>AES-256-GCM</b></td></tr>
+          <tr><td><span class="zh">语言</span><span class="en">Language</span></td><td><b>Rust</b></td><td><b>C</b></td></tr>
+        </tbody>
+      </table>
+      <p class="dev-note" style="margin-top:18px;text-align:center">
+        <span class="zh">同为共振补偿场景，Klipper 常驻内存约 50 MB，开启共振补偿后需 100 MB 以上；FlowPulse 服务端仅约 15 MB（应用层 6.7 / 服务层 8.6）。</span>
+        <span class="en">Under resonance compensation Klipper needs 100+ MB RAM (≈50 MB idle); FlowPulse's core server uses only ~15 MB (app 6.7 / service 8.6).</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENARIOS ===================== -->
+<section class="section" id="scenes">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Workflow</span>
+      <h2><span class="zh">典型工作流</span><span class="en">Typical Workflows</span></h2>
+    </div>
+    <div class="grid grid-3">
+      <div class="card reveal">
+        <h3><span class="zh">正常打印</span><span class="en">Normal Print</span></h3>
+        <div class="scenario"><span class="step-n">1</span><p><span class="zh">网页上传 G-code，等温度到 200°C 开始逐条发送。</span><span class="en">Upload G-code on the web; once hotend hits 200°C, commands stream out.</span></p></div>
+        <div class="scenario" style="margin-top:12px"><span class="step-n">2</span><p><span class="zh">核心服务端规划轨迹并加密下发，主板每 200ms 上报状态。</span><span class="en">Core server plans & encrypts; the board reports status every 200ms.</span></p></div>
+        <div class="scenario" style="margin-top:12px"><span class="step-n">3</span><p><span class="zh">温度曲线经 WebSocket 实时推送到网页，无需刷新。</span><span class="en">Temperature curves push live over WebSocket — no refresh.</span></p></div>
+      </div>
+      <div class="card reveal">
+        <h3><span class="zh">热床调平</span><span class="en">Bed Leveling</span></h3>
+        <div class="scenario"><span class="step-n">1</span><p><span class="zh">传感器触碰各点，记录高度网格。</span><span class="en">A probe touches points and records a height grid.</span></p></div>
+        <div class="scenario" style="margin-top:12px"><span class="step-n">2</span><p><span class="zh">打印时按 XY 位置自动补偿 Z，第一层粘得牢。</span><span class="en">Z is auto-compensated by XY during print for a solid first layer.</span></p></div>
+      </div>
+      <div class="card reveal">
+        <h3><span class="zh">安全保护</span><span class="en">Safety</span></h3>
+        <div class="scenario"><span class="step-n">1</span><p><span class="zh">每秒检查温度越限 / 越界 / 硬件故障。</span><span class="en">Per-second checks for over-temp, out-of-bounds, faults.</span></p></div>
+        <div class="scenario" style="margin-top:12px"><span class="step-n">2</span><p><span class="zh">异常即急停、关加热，并通知所有前端。</span><span class="en">On fault: e-stop, heaters off, notify every frontend.</span></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== OPEN SOURCE ===================== -->
+<section class="section section--alt" id="oss">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Codebase</span>
+      <h2><span class="zh">代码仓库</span><span class="en">Code Repositories</span></h2>
+      <p><span class="zh">四端分仓，Rust + C，均可独立构建。</span><span class="en">Four repositories, Rust + C, each builds independently.</span></p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card reveal"><h3>FlowUI</h3><p><span class="zh">前端网页 · </span><span class="en">Web UI · </span><b>Vue 3</b> · <code>npm run dev</code></p></div>
+      <div class="card reveal"><h3>FlowPulse</h3><p><span class="zh">客户端/应用层 · </span><span class="en">Client/App · </span><b>Rust</b> · <code>cargo build</code></p></div>
+      <div class="card reveal"><h3>emb-core-server</h3><p><span class="zh">核心服务端 · </span><span class="en">Core Server · </span><b>Rust</b> · <code>cargo build</code></p></div>
+      <div class="card reveal"><h3><span class="zh">STM32 固件</span><span class="en">STM32 Firmware</span></h3><p><span class="zh">设备端 · </span><span class="en">Device · </span><b>C</b> · <code>make</code></p></div>
+      <div class="card reveal"><h3><span class="zh">文档</span><span class="en">Docs</span></h3><p><span class="zh">本站点，原生 HTML/CSS/JS。</span><span class="en">This site, vanilla HTML/CSS/JS.</span></p></div>
+      <div class="card reveal"><h3>GitHub</h3><p><a class="btn" href="#" style="padding:8px 16px"><span class="zh">查看仓库</span><span class="en">View Repos</span> →</a></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="section">
+  <div class="container">
+    <div class="cta reveal">
+      <span class="eyebrow">Get Started</span>
+      <h2><span class="zh">准备好上手 FlowPulse 了吗？</span><span class="en">Ready to get started with FlowPulse?</span></h2>
+      <p style="color:var(--text-faint);max-width:580px;margin:14px auto 28px;font-size:16px">
+        <span class="zh">阅读开发者文档，了解四层架构与协议细节；或直接 clone 代码开始构建。</span>
+        <span class="en">Read the developer docs for the four-tier architecture and protocol details, or clone the code and start building.</span>
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="docs/index.html"><span class="zh">开发者文档</span><span class="en">Developer Docs</span> →</a>
+        <a class="btn" href="#"><span class="zh">GitHub 仓库</span><span class="en">GitHub Repos</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="cols">
+      <div>
+        <a class="brand" href="#top" style="margin-bottom:12px"><span class="dot"></span>Flow<b>Pulse</b></a>
+        <p style="color:var(--text-faint);font-size:14px;max-width:280px"><span class="zh">为高速精密打印而生的分体式控制固件。</span><span class="en">A decoupled control firmware built for high-speed, precise printing.</span></p>
+      </div>
+      <div><h5><span class="zh">产品</span><span class="en">Product</span></h5><a href="#features"><span class="zh">特性</span><span class="en">Features</span></a><a href="#arch"><span class="zh">架构</span><span class="en">Architecture</span></a><a href="#specs"><span class="zh">指标</span><span class="en">Specs</span></a></div>
+      <div><h5><span class="zh">文档</span><span class="en">Docs</span></h5><a href="docs/index.html"><span class="zh">总览</span><span class="en">Overview</span></a><a href="docs/architecture.html"><span class="zh">架构详解</span><span class="en">Architecture</span></a><a href="docs/motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a></div>
+      <div><h5><span class="zh">社区</span><span class="en">Community</span></h5><a href="#"><span class="zh">GitHub</span></a><a href="#"><span class="zh">论坛</span><span class="en">Forum</span></a><a href="#"><span class="zh">关于</span><span class="en">About</span></a></div>
+    </div>
+    <p class="copy">© 2026 FlowPulse · <span class="zh">以工程之心，为创造而生。</span><span class="en">Built with care, for those who create.</span></p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
