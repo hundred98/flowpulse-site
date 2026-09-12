@@ -233,7 +233,7 @@
       <h2><span class="zh">为什么选 FlowPulse</span><span class="en">Why FlowPulse</span></h2>
       <p><span class="zh">与 Klipper 的中心化架构不同，FlowPulse 采用非中心化、分层的设计，可同时运行在 SoC 与单片机上，从而大幅降低硬件成本。最低只需两颗单片机即可跑通：上位机用 ESP32-S3，下位机用 GD32F303 或 STM32F407；还支持扩展喷头单片机（喷头开发目前仅在 STM32F103 上完成）。</span><span class="en">Unlike Klipper's centralized design, FlowPulse is decentralized and layered, running on both SoC and MCU — sharply lowering hardware cost. A minimal build needs just two MCUs: an ESP32-S3 host and a GD32F303 or STM32F407 device; a toolhead MCU is also supported (toolhead work done so far only on STM32F103).</span></p>
     </div>
-    <div class="grid grid-3">
+    <div class="grid grid-2">
       <div class="card reveal">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 7V4M14 7V4M10 20v-3M14 20v-3M7 10H4M7 14H4M20 10h-3M20 14h-3"/></svg></div>
         <h3><span class="zh">纯单片机方案</span><span class="en">Pure-MCU Path</span></h3>
@@ -248,6 +248,11 @@
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4M12 15v2"/></svg></div>
         <h3><span class="zh">完全自主可控</span><span class="en">Fully Self-Developed</span></h3>
         <p><span class="zh">所有代码自主开发，从协议到固件全程可控，不依赖闭源中间层。</span><span class="en">Every layer is self-built — from protocol to firmware, with no reliance on closed middle layers.</span></p>
+      </div>
+      <div class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><path d="M8.4 8.4 15.6 15.6"/></svg></div>
+        <h3><span class="zh">单片机间硬同步</span><span class="en">MCU-to-MCU Sync</span></h3>
+        <p><span class="zh">主单片机与喷头单片机通过单片机间同步协同，实时性更强，初步实测同步精度约 10+ μs，可显著提升打印精度。</span><span class="en">The main and toolhead MCUs sync via inter-MCU synchronization for tighter real-time response — early measurements show ~10+ μs sync precision, markedly improving print accuracy.</span></p>
       </div>
     </div>
     <p class="why-note reveal"><span class="zh">由于个人时间有限，本项目尚未全部完成测试。有兴趣参与，或需要测试、验证、协助改善与优化，欢迎联系：</span><span class="en">Due to limited personal time, not everything is tested yet. To contribute, or for testing / validation / help improving the project, reach out:</span> <a href="mailto:hundred98@163.com">hundred98@163.com</a></p>

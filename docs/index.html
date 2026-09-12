@@ -33,6 +33,7 @@
       <li><span class="zh">支持纯单片机方案，类似某竹 A1 的硬件方案。</span><span class="en">Pure-MCU path, comparable to the 某竹 A1 hardware approach.</span></li>
       <li><span class="zh">运行在 SoC 时内存占用低，最小可支持 64 MB 内存。</span><span class="en">On SoC it stays light — runs on as little as 64 MB RAM.</span></li>
       <li><span class="zh">完全自主开发，所有代码可控。</span><span class="en">Fully self-developed; all code is under your control.</span></li>
+      <li><span class="zh">主单片机与喷头单片机之间采用单片机间同步，实时性更强，初步实测同步精度可达 10+ μs，可显著提升打印精度。</span><span class="en">The main and toolhead MCUs sync via inter-MCU synchronization for tighter real-time response — early measurements show sync precision around 10+ μs, markedly improving print accuracy.</span></li>
     </ol>
 
     <h2><span class="zh">四层架构一览</span><span class="en">Four Tiers at a Glance</span></h2>
