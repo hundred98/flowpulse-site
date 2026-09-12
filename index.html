@@ -37,6 +37,61 @@
   <div class="orb orb-2" data-depth="16" aria-hidden="true"></div>
   <div class="orb orb-3" data-depth="36" aria-hidden="true"></div>
   <div class="hero-grid" aria-hidden="true"></div>
+  <div class="world" aria-hidden="true"><div class="globe">
+    <svg viewBox="0 0 400 400" aria-hidden="true">
+      <defs>
+        <radialGradient id="ocean" cx="36%" cy="30%" r="82%">
+          <stop offset="0%" stop-color="#176b57"/>
+          <stop offset="48%" stop-color="#0c3a36"/>
+          <stop offset="100%" stop-color="#04181a"/>
+        </radialGradient>
+        <radialGradient id="shine" cx="33%" cy="25%" r="46%">
+          <stop offset="0%" stop-color="rgba(170,255,225,.30)"/>
+          <stop offset="100%" stop-color="rgba(170,255,225,0)"/>
+        </radialGradient>
+        <radialGradient id="term" cx="70%" cy="78%" r="60%">
+          <stop offset="0%" stop-color="rgba(0,0,0,.45)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+        </radialGradient>
+        <linearGradient id="arc" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#2dd4ee" stop-opacity="0"/>
+          <stop offset=".5" stop-color="#2ee6a6" stop-opacity=".9"/>
+          <stop offset="1" stop-color="#2dd4ee" stop-opacity="0"/>
+        </linearGradient>
+        <pattern id="dots" width="15" height="15" patternUnits="userSpaceOnUse">
+          <circle cx="3" cy="3" r="1.25" fill="rgba(120,230,195,.5)"/>
+        </pattern>
+        <clipPath id="ball"><circle cx="200" cy="200" r="188"/></clipPath>
+      </defs>
+      <circle cx="200" cy="200" r="188" fill="url(#ocean)"/>
+      <g clip-path="url(#ball)">
+        <rect class="spin-dots" x="-400" y="-400" width="1200" height="1200" fill="url(#dots)"/>
+        <g fill="none" stroke="rgba(130,225,195,.24)" stroke-width="1">
+          <ellipse cx="200" cy="200" rx="188" ry="46"/>
+          <ellipse cx="200" cy="200" rx="188" ry="100"/>
+          <ellipse cx="200" cy="200" rx="188" ry="150"/>
+          <line x1="12" y1="200" x2="388" y2="200"/>
+          <ellipse cx="200" cy="200" rx="46" ry="188"/>
+          <ellipse cx="200" cy="200" rx="100" ry="188"/>
+          <ellipse cx="200" cy="200" rx="150" ry="188"/>
+          <line x1="200" y1="12" x2="200" y2="388"/>
+        </g>
+        <path class="net-arc" d="M116 150 Q200 60 296 168" stroke="url(#arc)" stroke-width="1.6" fill="none"/>
+        <path class="net-arc" d="M150 274 Q252 334 302 236" stroke="url(#arc)" stroke-width="1.6" fill="none"/>
+        <path class="net-arc" d="M118 252 Q212 300 288 194" stroke="url(#arc)" stroke-width="1.4" fill="none"/>
+      </g>
+      <g fill="#6ee7b7">
+        <circle cx="116" cy="150" r="3"/>
+        <circle cx="296" cy="168" r="3"/>
+        <circle cx="150" cy="274" r="3"/>
+        <circle cx="302" cy="236" r="3"/>
+        <circle cx="288" cy="194" r="3"/>
+      </g>
+      <circle cx="200" cy="200" r="188" fill="url(#shine)"/>
+      <circle cx="200" cy="200" r="188" fill="url(#term)"/>
+      <circle cx="200" cy="200" r="188" fill="none" stroke="rgba(130,225,195,.3)" stroke-width="1.5"/>
+    </svg>
+  </div></div>
   <div class="container">
     <div class="hero-badge">
       <b>Rust + C</b><span class="sep">·</span><span class="zh">四端协同</span><span class="en">four-tier runtime</span><span class="sep">·</span><span class="zh">协议开放</span><span class="en">open protocol</span>
@@ -47,8 +102,8 @@
       <span class="en">Flow · Pulse — control firmware built for high-speed, high-precision printing</span>
     </p>
     <p class="sub">
-      <span class="zh">一套分体式四层架构，从网页指令到电机脉冲，全链路闭环。Rust 后端大脑 + C 语言裸机固件。支持 SoC 与纯单片机两种落地方案，最低 64 MB 内存即可稳定运行。</span>
-      <span class="en">A decoupled four-tier architecture covering the full chain from web commands to motor pulses. A Rust control brain plus bare-metal C firmware. Runs on both SoC and pure-MCU boards — stable from just 64 MB RAM.</span>
+      <span class="zh">一套分体式四层架构，从网页指令到电机脉冲，全链路闭环。Rust 后端大脑 + C 语言裸机固件。支持 <b class="hl-emph">SoC 与纯单片机</b>两种落地方案，<b class="hl-emph">最低 64 MB 内存</b>即可稳定运行。</span>
+      <span class="en">A decoupled four-tier architecture covering the full chain from web commands to motor pulses. A Rust control brain plus bare-metal C firmware. Runs on both <b class="hl-emph">SoC and pure-MCU boards</b> — stable from just <b class="hl-emph">64 MB RAM</b>.</span>
     </p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="docs/index.html"><span class="zh">阅读文档</span><span class="en">Read the Docs</span> →</a>
@@ -60,44 +115,16 @@
       <span class="pill"><span class="zh">端到端加密</span><span class="en">E2E encrypted</span></span>
       <span class="pill">AES-256-GCM</span>
       <span class="pill">~500 <span class="zh">kHz 脉冲</span><span class="en">kHz step</span></span>
-    </div>
-
-    <div class="console reveal">
-      <div class="console-bar">
-        <span class="c-dots"><i></i><i></i><i></i></span>
-        <span class="c-title">flowpulse · motion console</span>
-        <span class="c-badge">● AES-256-GCM</span>
-      </div>
-      <div class="console-body">
-        <pre class="c-log" id="cLog" aria-hidden="true"></pre>
-        <div class="c-live" aria-hidden="true">
-          <span class="live-t"><span class="zh">实时状态</span><span class="en">Live</span></span>
-          <div class="c-row"><span>X</span><span class="c-val" id="lvX">124.612</span></div>
-          <div class="c-row"><span>Y</span><span class="c-val" id="lvY">88.204</span></div>
-          <div class="c-row"><span>Z</span><span class="c-val" id="lvZ">0.200</span></div>
-          <div class="c-row"><span>E</span><span class="c-val" id="lvE">42.318</span></div>
-          <div class="c-row"><span>feed</span><span class="c-val up" id="lvF">6000 mm/min</span></div>
-          <div class="meter-wrap">
-            <div class="c-row" style="margin-bottom:6px"><span>step rate</span><span class="c-val" id="lvS">498 kHz</span></div>
-            <div class="meter"><i id="lvBar"></i></div>
-          </div>
-        </div>
-      </div>
-      <div class="console-foot">
-        <span>MCU <b>STM32F407 @168MHz</b></span>
-        <span>step <b>~500 kHz</b></span>
-        <span>tick <b>1 ms</b></span>
-        <span>RSS <b>~15 MB</b></span>
-        <span style="margin-left:auto"><b id="fps">60</b> fps</span>
-      </div>
+      <span class="pill pill-accent"><b>SoC + 纯单片机</b></span>
+      <span class="pill pill-accent">64 MB 即可运行</span>
     </div>
 
     <div class="hero-stats reveal">
-      <div class="hl-item">
+      <div class="hl-item key">
         <span class="hl-num">≥ 64 <small>MB</small></span>
         <span class="hl-lbl"><span class="zh">最低即可稳定运行</span><span class="en">Stable from 64 MB</span></span>
       </div>
-      <div class="hl-item">
+      <div class="hl-item key">
         <span class="hl-num">SoC + <span class="zh">纯单片机</span><span class="en">Pure MCU</span></span>
         <span class="hl-lbl"><span class="zh">两种落地方案</span><span class="en">Two paths</span></span>
       </div>
@@ -370,7 +397,7 @@
         <thead><tr><th><span class="zh">指标</span><span class="en">Metric</span></th><th><span class="zh">服务端</span><span class="en">Core Server</span></th><th><span class="zh">设备端</span><span class="en">Device</span></th></tr></thead>
         <tbody>
           <tr><td><span class="zh">芯片</span><span class="en">MCU</span></td><td>ARM Cortex-A (Linux)</td><td><b>STM32F407</b> @ 168MHz · <b>GD32F303</b> @ 120MHz</td></tr>
-          <tr><td><span class="zh">内存</span><span class="en">Memory</span></td><td><b>~15 MB</b>（应用层 6.7 / 服务层 8.6）</td><td><b>192 KB</b> SRAM</td></tr>
+          <tr><td><span class="zh">内存</span><span class="en">Memory</span></td><td><b>~15 MB</b>（应用层 6.7 / 服务层 8.6）</td><td><b>~40 KB</b> SRAM</td></tr>
           <tr><td><span class="zh">系统</span><span class="en">OS</span></td><td>Linux</td><td><b>裸机</b> (no RTOS)</td></tr>
           <tr><td><span class="zh">脉冲输出</span><span class="en">Step rate</span></td><td>—</td><td><b>~500 kHz</b></td></tr>
           <tr><td><span class="zh">控制周期</span><span class="en">Control tick</span></td><td>—</td><td><b>1 ms</b> (SysTick)</td></tr>
