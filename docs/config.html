@@ -43,9 +43,9 @@
       <div class="container">
     <a class="doc-back" href="index.html">← <span class="zh">总览</span><span class="en">Overview</span></a>
     <h1><span class="zh">配置文件</span><span class="en">Configuration Files</span></h1>
-    <p class="doc-lead"><span class="zh">FlowPulse 的所有运行参数都以 JSON 格式存放，按功能类别拆分到多个独立文件，便于按模块维护与备份。配置文件默认位于 </span><span class="en">All FlowPulse runtime parameters are stored as JSON, split by function into separate files for easy per-module maintenance and backup. Config files live under </span><code>E:\3D-Printer\4.FlowPulse\config</code><span class="zh">。</span><span class="en">.</span></p>
+    <p class="doc-lead"><span class="zh">FlowPulse 的所有运行参数都以 JSON 格式存放，按功能类别拆分到多个独立文件，便于按模块维护与备份。配置文件默认位于 </span><span class="en">All FlowPulse runtime parameters are stored as JSON, split by function into separate files for easy per-module maintenance and backup. Config files live under </span><code>.\config</code><span class="zh">。</span><span class="en">.</span></p>
 
-    <p><span class="zh">硬件引脚配置有三个文件：<code>hardware.json</code> 为实际使用的主配置；<code>hardware-STM32.json</code> 与 <code>hardware-GD32.json</code> 是分别对应两颗主控芯片的备用备份，结构相同、仅引脚与驱动参数不同，换板时取对应文件覆盖即可。</span><span class="en">The hardware pin mapping has three files: <code>hardware.json</code> is the active config in use; <code>hardware-STM32.json</code> and <code>hardware-GD32.json</code> are backup variants for the two MCUs — same schema, only pins and driver params differ, swap in the matching file when changing boards.</span></p>
+    <p><span class="zh">硬件引脚配置：<code>hardware.json</code> 为实际使用的主配置；<code>hardware-STM32.json</code> 与 <code>hardware-GD32.json</code> 是分别对应两颗主控芯片的备用备份，结构相同、仅引脚与驱动参数不同，换板时取对应文件覆盖即可。</span><span class="en">The hardware pin mapping: <code>hardware.json</code> is the active config in use; <code>hardware-STM32.json</code> and <code>hardware-GD32.json</code> are backup variants for the two MCUs — same schema, only pins and driver params differ, swap in the matching file when changing boards.</span></p>
 
     <h2><span class="zh">文件总览</span><span class="en">File Overview</span></h2>
 
