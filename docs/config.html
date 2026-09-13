@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowPulse — 配置文件 · Configuration</title>
+<link rel="stylesheet" href="../assets/css/style.css?v=20260913a">
+</head>
+<body>
+<nav class="nav">
+  <div class="container">
+    <a class="brand" href="../index.html"><span class="dot"></span>Flow<b>Pulse</b></a>
+    <a href="../index.html" class="nav-home"><span class="zh">返回首页</span><span class="en">Home</span></a>
+    <button class="lang-toggle">EN</button>
+  </div>
+</nav>
+<div class="docs-shell">
+  <aside class="docs-side">
+    <nav class="side-tree">
+      <div class="tree-group">
+        <p class="tree-label"><span class="zh">开始</span> <span class="en">Start</span></p>
+        <div class="tree-children">
+          <a href="index.html"><span class="zh">总览</span><span class="en">Overview</span></a>
+        </div>
+      </div>
+      <div class="tree-group">
+        <p class="tree-label"><span class="zh">架构</span> <span class="en">Architecture</span></p>
+        <div class="tree-children">
+          <a href="architecture.html"><span class="zh">架构详解</span><span class="en">Architecture</span></a>
+          <a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a>
+        </div>
+      </div>
+      <div class="tree-group">
+        <p class="tree-label"><span class="zh">配置</span> <span class="en">Config</span></p>
+        <div class="tree-children">
+          <a href="config.html" class="active"><span class="zh">配置文件</span><span class="en">Config</span></a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+  <main class="docs-main">
+    <section class="doc-page">
+      <div class="container">
+    <a class="doc-back" href="index.html">← <span class="zh">总览</span><span class="en">Overview</span></a>
+    <h1><span class="zh">配置文件</span><span class="en">Configuration Files</span></h1>
+    <p class="doc-lead"><span class="zh">FlowPulse 的所有运行参数都以 JSON 格式存放，按功能类别拆分到多个独立文件，便于按模块维护与备份。配置文件默认位于 </span><span class="en">All FlowPulse runtime parameters are stored as JSON, split by function into separate files for easy per-module maintenance and backup. Config files live under </span><code>E:\3D-Printer\4.FlowPulse\config</code><span class="zh">。</span><span class="en">.</span></p>
+
+    <p><span class="zh">硬件引脚配置有三个文件：<code>hardware.json</code> 为实际使用的主配置；<code>hardware-STM32.json</code> 与 <code>hardware-GD32.json</code> 是分别对应两颗主控芯片的备用备份，结构相同、仅引脚与驱动参数不同，换板时取对应文件覆盖即可。</span><span class="en">The hardware pin mapping has three files: <code>hardware.json</code> is the active config in use; <code>hardware-STM32.json</code> and <code>hardware-GD32.json</code> are backup variants for the two MCUs — same schema, only pins and driver params differ, swap in the matching file when changing boards.</span></p>
+
+    <h2><span class="zh">文件总览</span><span class="en">File Overview</span></h2>
+
+    <h3><span class="zh">① 打印机与通信</span><span class="en">① Printer &amp; Communication</span> — <code>printer.json</code></h3>
+    <p><span class="zh">定义机型标识与上下位机通信方式：串口参数（端口、波特率、数据位、校验、停止位、超时）、状态上报间隔，以及 G-code 批处理大小。</span><span class="en">Printer model id and host↔device communication: serial params (port, baud rate, data bits, parity, stop bits, timeout), status-report interval, and G-code batch size.</span></p>
+
+    <h3><span class="zh">② 硬件引脚与驱动</span><span class="en">② Hardware Pins &amp; Drivers</span> — <code>hardware.json</code> <span class="zh">（主用）</span><span class="en">(active)</span></h3>
+    <p><span class="zh">板级引脚与驱动映射：各轴电机（step/dir/enable、细分、电流、sensorless 归位）、限位开关、温度传感器、加热管、GPIO、风扇，以及热床调平网格。换主控时通常只改 <code>hardware-STM32.json</code> / <code>hardware-GD32.json</code> 中的引脚。</span><span class="en">Board-level pin and driver mapping: per-axis motors (step/dir/enable, microsteps, current, sensorless homing), limit switches, temperature sensors, heaters, GPIO, fans, and the bed-leveling mesh. When changing the MCU you usually only edit the pins in <code>hardware-STM32.json</code> / <code>hardware-GD32.json</code>.</span></p>
+
+    <h3><span class="zh">③ 运动控制</span><span class="en">③ Motion Control</span> — <code>motion.json</code></h3>
+    <p><span class="zh">运动学参数（最大速度/加速度/进给率/jerk）、junction 转角、segment 缓冲、归位、圆弧插补、挤出场压力提前（pressure advance）、六段速度曲线，以及共振补偿（input shaper）。</span><span class="en">Kinematics (max velocity/accel/feed-rate/jerk), junction deviation, segment buffering, homing, arc interpolation, extruder pressure advance, the six-point velocity profile, and resonance compensation (input shaper).</span></p>
+
+    <h3><span class="zh">④ 温度与材料</span><span class="en">④ Temperature &amp; Materials</span> — <code>temperature.json</code></h3>
+    <p><span class="zh">材料预设（PLA / ABS / PETG 的喷嘴/热床温度与风扇）、温度安全检测、等待稳定条件、自动风扇启停，以及 PID 整定参数。</span><span class="en">Material presets (PLA / ABS / PETG hotend/bed temps and fan), temperature safety checks, settle-wait conditions, auto-fan on/off, and PID tuning parameters.</span></p>
+
+    <h3><span class="zh">⑤ 安全保护</span><span class="en">⑤ Safety</span> — <code>safety.json</code></h3>
+    <p><span class="zh">总开关、急停超时、运动范围限制，以及加热器温度故障/偏差的分级阈值与动作（告警 / 暂停 / 关闭 / 急停）。</span><span class="en">Master switch, emergency-stop timeout, motion range limits, and graded heater temperature-fault / deviation thresholds with actions (warn / pause / turn-off / emergency-stop).</span></p>
+
+    <h3><span class="zh">⑥ 断点续打</span><span class="en">⑥ Resume / Checkpoint</span> — <code>resume.json</code></h3>
+    <p><span class="zh">断点续打开关、检查点间隔、Z 抬升/回抽距离，以及当前检查点状态（层号、温度、进给/流量比例）。</span><span class="en">Resume on/off, checkpoint interval, Z-hop and retract distances, and the current checkpoint state (layer, temps, feed/flow ratios).</span></p>
+
+    <h3><span class="zh">⑦ 日志诊断</span><span class="en">⑦ Logging &amp; Diagnostics</span> — <code>logging.json</code></h3>
+    <p><span class="zh">控制台与文件输出级别，以及按模块（温度/安全/MQTT/WebSocket…）单独设置日志等级，便于排查问题。</span><span class="en">Console and file output levels, plus per-module log levels (temperature / safety / MQTT / WebSocket …) for easier troubleshooting.</span></p>
+
+    <p><span class="zh">后续各章将针对用户最常改动的 ①②③④⑤ 给出字段级说明与修改示例。</span><span class="en">Later chapters will give field-level details and edit examples for the most-edited files ①②③④⑤.</span></p>
+  </div>
+  </section>
+  </main>
+</div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

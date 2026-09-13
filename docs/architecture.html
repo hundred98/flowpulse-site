@@ -4,23 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FlowPulse — 架构详解 · Architecture</title>
-<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/style.css?v=20260913a">
 </head>
 <body>
 <nav class="nav">
   <div class="container">
     <a class="brand" href="../index.html"><span class="dot"></span>Flow<b>Pulse</b></a>
-    <div class="nav-links">
-      <a href="../index.html"><span class="zh">返回首页</span><span class="en">Home</span></a>
-      <a href="index.html"><span class="zh">总览</span><span class="en">Overview</span></a>
-      <a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a>
-    </div>
+    <a href="../index.html" class="nav-home"><span class="zh">返回首页</span><span class="en">Home</span></a>
     <button class="lang-toggle">EN</button>
   </div>
 </nav>
-
-<section class="doc-page">
-  <div class="container">
+<div class="docs-shell">
+  <aside class="docs-side">
+    <nav class="side-tree">
+      <div class="tree-group">
+        <p class="tree-label"><span class="zh">开始</span> <span class="en">Start</span></p>
+        <div class="tree-children">
+          <a href="index.html"><span class="zh">总览</span><span class="en">Overview</span></a>
+        </div>
+      </div>
+      <div class="tree-group">
+        <p class="tree-label"><span class="zh">架构</span> <span class="en">Architecture</span></p>
+        <div class="tree-children">
+          <a href="architecture.html" class="active"><span class="zh">架构详解</span><span class="en">Architecture</span></a>
+          <a href="motion.html"><span class="zh">运动控制</span><span class="en">Motion</span></a>
+        </div>
+      </div>
+      <div class="tree-group">
+        <p class="tree-label"><span class="zh">配置</span> <span class="en">Config</span></p>
+        <div class="tree-children">
+          <a href="config.html"><span class="zh">配置文件</span><span class="en">Config</span></a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+  <main class="docs-main">
+    <section class="doc-page">
+      <div class="container">
     <a class="doc-back" href="index.html">← <span class="zh">总览</span><span class="en">Overview</span></a>
     <h1><span class="zh">架构详解</span><span class="en">Architecture</span></h1>
     <p class="doc-lead"><span class="zh">本章面向使用者，说明 FlowPulse 四层的职责边界、通信方式与一条指令从网页到电机的完整路径。核心服务端与固件内部实现细节后续补充。</span><span class="en">A user-facing walkthrough of the four tiers' responsibilities, how they talk, and the full path of one command from web to motor. Internal details of the core server and firmware come later.</span></p>
@@ -58,7 +78,9 @@
       <li><span class="zh">温度、位置等状态沿原路实时回传前端。</span><span class="en">Temperature, position and other status stream back to the frontend in real time.</span></li>
     </ol>
   </div>
-</section>
+  </section>
+  </main>
+</div>
 <script src="../assets/js/main.js"></script>
 </body>
 </html>

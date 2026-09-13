@@ -108,6 +108,8 @@ body::after {
   color: var(--text-dim); padding: 7px 12px; border-radius: 8px; transition: .18s;
 }
 .nav-links a:hover { color: var(--text); background: var(--surface-2); }
+.nav-home { margin-left: auto; color: var(--text-dim); font-size: 14.5px; padding: 7px 12px; border-radius: 8px; transition: .18s; }
+.nav-home:hover { color: var(--text); background: var(--surface-2); }
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 .lang-toggle {
   font-family: var(--font-mono); font-size: 13px; cursor: pointer;
@@ -508,7 +510,7 @@ html[lang="en"] .zh { display: none; }
 }
 
 /* ===== docs pages (placeholder) ===== */
-.doc-page { padding: 96px 0 120px; min-height: 70vh; }
+.doc-page { padding: 44px 0 100px; min-height: 70vh; }
 .doc-back { display: inline-block; margin-bottom: 22px; color: var(--muted); font-size: 14px; text-decoration: none; }
 .doc-back:hover { color: var(--accent); }
 .doc-page h1 { font-size: clamp(28px, 4vw, 42px); margin-bottom: 18px; letter-spacing: -.01em; }
@@ -531,3 +533,46 @@ html[lang="en"] .zh { display: none; }
 .doc-page ul.tiers li { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,.02); }
 .doc-page ul.tiers li b { color: var(--text); }
 .doc-page .tiers .badge-tbd { margin-left: 8px; vertical-align: middle; }
+
+/* ---- docs left sidebar ---- */
+.docs-shell { display: flex; align-items: flex-start; min-height: 100vh; }
+.docs-side {
+  position: sticky; top: var(--nav-h); align-self: flex-start;
+  width: 240px; flex: none;
+  border-right: 1px solid var(--border-soft);
+  background: linear-gradient(180deg, rgba(255,255,255,.022), transparent 62%);
+  padding: 28px 16px; display: flex; flex-direction: column; z-index: 70;
+}
+.side-tree { display: flex; flex-direction: column; gap: 20px; }
+.tree-group { display: flex; flex-direction: column; }
+.tree-label {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  letter-spacing: .01em; margin: 0 0 7px; padding-left: 2px;
+}
+.tree-label .en {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-faint); font-weight: 500;
+}
+.tree-children {
+  display: flex; flex-direction: column; gap: 3px;
+  border-left: 1px solid var(--border-soft);
+  margin-left: 5px; padding: 2px 0 4px 18px;
+}
+.side-tree a {
+  display: block; color: var(--text-dim); padding: 7px 12px; border-radius: 8px;
+  font-size: 14.5px; line-height: 1.4; transition: .16s;
+}
+.side-tree a:hover { color: var(--text); background: var(--surface-2); }
+.side-tree a.active { color: var(--text); background: var(--accent-soft); box-shadow: inset 2px 0 0 var(--accent); }
+.side-tree a .en { color: var(--text-faint); font-size: .82em; margin-left: 8px; }
+.docs-main { flex: 1 1 auto; min-width: 0; }
+.docs-main .container { padding-left: 46px; padding-right: 46px; }
+@media (max-width: 700px) {
+  .docs-shell { flex-direction: column; }
+  .docs-side {
+    position: relative; top: auto; width: 100%;
+    border-right: none; border-bottom: 1px solid var(--border-soft); padding: 16px 20px;
+  }
+  .docs-main .container { padding-left: 22px; padding-right: 22px; }
+}
